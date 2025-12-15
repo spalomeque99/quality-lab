@@ -1,2 +1,5 @@
 # quality-lab
-Route to learn Java testing and Docker
+
+## Build
+- mvn clean test
+- mvn clean verify (Genera archivo jacoco)
