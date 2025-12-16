@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="com.quality.quality_lab.QualityLabApplicationTests" time="0.0" tests="1" errors="0" skipped="1" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="com.quality.quality_lab.integration.TaskServiceTest" time="0.107" tests="3" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="21"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -64,7 +64,7 @@
     <property name="maven.repo.local" value="C:\Users\sergi\.m2\repository"/>
     <property name="java.class.version" value="65.0"/>
   </properties>
-  <testcase name="contextLoads" classname="com.quality.quality_lab.QualityLabApplicationTests" time="0.0">
-    <skipped message="Setup: arrancaremos el contexto cuando tengamos DB de test (Testcontainers)."/>
-  </testcase>
+  <testcase name="testTaskServiceTitleMore250ThrowException" classname="com.quality.quality_lab.integration.TaskServiceTest" time="0.052"/>
+  <testcase name="testTaskServiceTitleOk" classname="com.quality.quality_lab.integration.TaskServiceTest" time="0.0"/>
+  <testcase name="testTaskServiceTitleEmptyThrowException" classname="com.quality.quality_lab.integration.TaskServiceTest" time="0.0"/>
 </testsuite>
