@@ -2,13 +2,13 @@
 
 import com.quality.quality_lab.domain.Task;
 
+import java.time.Instant;
 import java.util.Date;
 
-<span class="fc" id="L7">public class TaskService {</span>
+<span class="fc" id="L8">public class TaskService {</span>
 
-    public Task createTask(String title, boolean done ,Date createdAt) {
-<span class="fc" id="L10">        Task task = new Task(null, title, done, createdAt);</span>
-<span class="fc" id="L11">        return task;</span>
+    public Task createTask(String title) {
+<span class="fc" id="L11">        return new Task(null, title, false, Instant.now());</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
