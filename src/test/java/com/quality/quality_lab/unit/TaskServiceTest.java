@@ -8,11 +8,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Instant;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -57,6 +59,58 @@ class TaskServiceTest {
         assertNotNull(task.createdAt());
     }
 
+    @Test
+    void should_find_task_then_finalize_task_save_and_return_task(){
+        Task taskReturnDone = createDoneValidTask();
+        Optional<Task> taskReturn = Optional.of(createValidTask());
+        ArgumentCaptor<Task> taskCaptor = ArgumentCaptor.forClass(Task.class);
+
+        Mockito.doReturn(taskReturn).when(taskRepository).findById(Mockito.any());
+        Mockito.doReturn(taskReturnDone).when(taskRepository).save(Mockito.any());
+
+        Task task = taskService.finalizeTaskById(1L);
+
+        Mockito.verify(taskRepository, Mockito.times(1)).findById(Mockito.any());
+        Mockito.verify(taskRepository, Mockito.times(1)).save(taskCaptor.capture());
+
+        Task taskSaved = taskCaptor.getValue();
+
+        assertTrue(taskSaved.done());
+        assertEquals(TITLE, taskSaved.title());
+        assertEquals(1L, taskSaved.id());
+
+        assertNotNull(task);
+        assertEquals(TITLE, task.title());
+        assertTrue(task.done());
+    }
+
+    @Test
+    void should_throw_exception_when_mark_done_inexistent_task(){
+        Mockito.doReturn(Optional.empty()).when(taskRepository).findById(Mockito.any());
+
+        assertThrows(
+                RuntimeException.class,
+                () -> taskService.finalizeTaskById(1L)
+        );
+
+        Mockito.verify(taskRepository, Mockito.never()).save(Mockito.any());
+    }
+
+    @Test
+    void should_throw_exception_when_mark_done_already_done_task(){
+        Task donedTask = createDoneValidTask();
+
+        Mockito.doReturn(donedTask).when(taskRepository).findById(Mockito.any());
+
+        assertThrows(
+                RuntimeException.class,
+                () -> taskService.finalizeTaskById(1L)
+        );
+
+        Mockito.verify(taskRepository, Mockito.never()).save(Mockito.any());
+    }
+
+
     static Stream <String> invalidTitles() {
         return Stream.of(
                 null,
@@ -67,6 +121,11 @@ class TaskServiceTest {
     }
 
     private Task createValidTask() {
-        return new Task(null, TITLE, false, Instant.now());
+        return new Task(1L, TITLE, false, Instant.now());
     }
+
+    private Task createDoneValidTask() {
+        return new Task(1L, TITLE, true, Instant.now());
+    }
+
 }
