@@ -45,7 +45,7 @@ class TaskServiceTest {
     }
 
     @Test
-    void should_create_task_when_title_is_valid() {
+    void should_create_and_return_task_when_title_is_valid() {
         Task taskReturn = createValidTask();
 
         Mockito.doReturn(taskReturn).when(taskRepository).save(Mockito.any());
@@ -53,7 +53,6 @@ class TaskServiceTest {
         Task task = taskService.createTask(TITLE);
 
         Mockito.verify(taskRepository, Mockito.times(1)).save(Mockito.any());
-        assertNotNull(task);
         assertEquals(TITLE, task.title());
         assertFalse(task.done());
         assertNotNull(task.createdAt());
@@ -63,7 +62,8 @@ class TaskServiceTest {
     void should_find_task_then_finalize_task_save_and_return_task(){
         Task taskReturnDone = createDoneValidTask();
         Optional<Task> taskReturn = Optional.of(createValidTask());
-        ArgumentCaptor<Task> taskCaptor = ArgumentCaptor.forClass(Task.class);
+        ArgumentCaptor<Task> taskCaptorSave = ArgumentCaptor.forClass(Task.class);
+
 
         Mockito.doReturn(taskReturn).when(taskRepository).findById(Mockito.any());
         Mockito.doReturn(taskReturnDone).when(taskRepository).save(Mockito.any());
@@ -71,17 +71,17 @@ class TaskServiceTest {
         Task task = taskService.finalizeTaskById(1L);
 
         Mockito.verify(taskRepository, Mockito.times(1)).findById(Mockito.any());
-        Mockito.verify(taskRepository, Mockito.times(1)).save(taskCaptor.capture());
+        Mockito.verify(taskRepository, Mockito.times(1)).save(taskCaptorSave.capture());
 
-        Task taskSaved = taskCaptor.getValue();
+        Task taskSaved = taskCaptorSave.getValue();
 
         assertTrue(taskSaved.done());
         assertEquals(TITLE, taskSaved.title());
         assertEquals(1L, taskSaved.id());
 
-        assertNotNull(task);
         assertEquals(TITLE, task.title());
         assertTrue(task.done());
+        assertEquals(task.createdAt(), taskSaved.createdAt());
     }
 
     @Test
@@ -100,7 +100,7 @@ class TaskServiceTest {
     void should_throw_exception_when_mark_done_already_done_task(){
         Task donedTask = createDoneValidTask();
 
-        Mockito.doReturn(donedTask).when(taskRepository).findById(Mockito.any());
+        Mockito.doReturn(Optional.of(donedTask)).when(taskRepository).findById(Mockito.any());
 
         assertThrows(
                 RuntimeException.class,
