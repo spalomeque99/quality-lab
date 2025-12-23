@@ -1,10 +1,11 @@
 package com.quality.quality_lab.application;
 
 import com.quality.quality_lab.domain.Task;
+import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.Optional;
 
+@Service
 public class TaskService {
 
     private final TaskRepository taskRepository;
