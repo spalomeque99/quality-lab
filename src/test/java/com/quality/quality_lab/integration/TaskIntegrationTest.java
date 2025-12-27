@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.temporal.ChronoUnit;
+
 @SpringBootTest
 public class TaskIntegrationTest {
 
@@ -35,14 +37,15 @@ public class TaskIntegrationTest {
         Assertions.assertTrue(finalizedTask.done());
         Assertions.assertNotNull(savedTask.createdAt());
         Assertions.assertEquals(finalizedTask.title(), savedTask.title());
-        Assertions.assertEquals(finalizedTask.createdAt(), savedTask.createdAt());
+        //Se hace asi, porque al persistir hay fallos en milisegundos
+        Assertions.assertEquals(finalizedTask.createdAt().truncatedTo(ChronoUnit.MILLIS), savedTask.createdAt().truncatedTo(ChronoUnit.MILLIS));
         Assertions.assertEquals(finalizedTask.id(), savedTask.id());
     }
 
     @Test
     void should_throw_exception_when_finalize_inexistent_task(){
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            taskService.finalizeTaskById(2L);
+            taskService.finalizeTaskById(200L);
         });
     }
 

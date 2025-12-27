@@ -1,15 +1,13 @@
-package com.quality.quality_lab.infraestructure.repository;
+package com.quality.quality_lab.infrastructure.repository;
 
 import com.quality.quality_lab.application.TaskRepository;
 import com.quality.quality_lab.domain.Task;
-import org.springframework.stereotype.Repository;
 
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-@Repository
 public class InMemoryRepository implements TaskRepository {
 
     private final Map<Long, Task> storage = new ConcurrentHashMap<>();
